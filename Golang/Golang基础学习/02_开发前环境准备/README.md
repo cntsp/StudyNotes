@@ -80,8 +80,91 @@ Linux和Mac平台就参照上面配置环境变量的方式将自己的工作目
 
 
 
+在Go 1.8 版本之前， `GOPATH`环境变量是默认是空的。从Go1.8版本开始，Go开发包在安装完成后会为`GOPATH`设置一个默认目录，参见下表。
+
+**GOPATH在不同操作系统平台上的默认值**
+
+| 平台    | GOPATH默认值     | 举例              |
+| ------- | ---------------- | ----------------- |
+| Windows | %USERPROFILE/go% | C:\User\用户名\go |
+| Unix    | $HOME/go         | /home/用户名/go   |
+
+同时，我们将`GOROOT`下的bin目录即`GOPATH`下的bi目录都添加到环境变量PATH中。
 
 
-## Go项目目录结构介绍
 
-## 安装vscode编辑器
+## Go项目目录结构
+
+在进行Go语言开发的时候，我们的代码总是会保存在 `$GOPATH/src`目录下。在工程经过`go build`、`go install` 或 `go get` 等指令后，会将下载的第三分包源代码文件放在`$GOPATH/src` 目录下，产生的二进制可执行文件放在`$GOPATH/bin`目录下，生成的中间缓存文件会被保存在`$GOPATH/pkg` 目录下。
+
+如果我们使用版本管理工具（Version Control System, VCS。例如常用的Git）来管理我们的项目代码时，我们只需要加`$GOPATH/src`  目录的源代码即可，`bin`和`pkg`目录的内容无需版本控制。
+
+
+
+## 适合个人开发者
+
+我们知道源代码都是存放在`GOPATH`的 `src` 目录下，那我们可以按照下图来组织我们的代码。
+
+![image-20210123183210779](images/image-20210123183210779.png)
+
+
+
+## 目前流行的项目结构
+
+GO语言中也是通过包来组织代码文件，我们可以引用别人的包也可以发布自己的包，但是为了防止不同包的项目名冲突，我们通常使用`顶级域名`来作为包名的前缀，这样就不用担心项目名冲突的问题了。
+
+因为不是每个个人开发者都拥有自己的顶级域名，所以目前流行的方式时使用个人`github`用户名来区别不同的包名。
+
+![image-20210123183534415](images/image-20210123183534415.png)
+
+
+
+举个例子：张三和李四都有一个名叫`studygo`的项目，那么这两个包的路径就是：
+
+```go
+import "github.com/zhangsan/studygo"
+```
+
+和
+
+```go
+import "github.com/lisi/studygo"
+```
+
+以后我们从github 上下载别人包的时候，如：
+
+```go
+go get github.com/gin-gonic/gin
+```
+
+那么在我自己本地，这个下载的包就会保存目录是这样的 `D:\go_workspace\src\github.com\gin-gonic\gin`。
+
+
+
+## 适合企业开发者
+
+![image-20210123184056197](images/image-20210123184056197.png)
+
+
+
+## Go开发编辑器
+
+Go采用的是UTF-8编码的文本文件存放源代码，理论上使用任何一款文本编辑器都可以做Go语言开发，这里推荐使用`VSCODE`和`GoLand`。`VS Code`是微软开源的编辑器，而`GoLand`是`jetbrains` 出品的付费IDE。
+
+我们这里使用`VS Code`加插件作为go语言的开发工具。
+
+
+
+## 安装`vscode`编辑器
+
+`VS Code`全称 `Visual Studio Code`，是微软公司开源一款免费现代化轻量级代码编辑器，支持几乎所有主流的开发语言的语法高亮、智能代码补全、自定义热键、括号匹配、代码片段、代码对比Diff、GIT等特性，支持插件扩展，支持Win、Mac以及Linux平台。
+
+虽然不如某些IDE功能强大，但是它添加GO扩展插件后已经足够胜任我们日常的Go开发工作。
+
+
+
+### 下载和安装
+
+`VS Code` 官方下载地址： https://code.visualstudio.com/Download
+
+三大主流平台都支持，请根据自己的电脑平台选择对应的安装包。

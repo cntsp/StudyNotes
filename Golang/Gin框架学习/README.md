@@ -2,7 +2,21 @@
 
 
 
-资源来自于https://bilibili.com 七米老师的视频课程： [https://www.bilibili.com/video/BV1gJ411p7xC](https://www.bilibili.com/video/BV1gJ411p7xC)
+> 资源来自于https://bilibili.com 七米老师的视频课程： [https://www.bilibili.com/video/BV1gJ411p7xC](https://www.bilibili.com/video/BV1gJ411p7xC)
+
+
+
+# Gin框架系列教程
+
+1. Gin框架基本使用
+2. GORM基本使用
+3. Web开发项目实战
+
+
+
+
+
+
 
 
 

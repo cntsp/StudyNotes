@@ -50,5 +50,7 @@
 
 
 - [01_为什么要学习Go](./Golang/Golang基础学习/01_为什么要学习Go/README.md)
+- [02_开发环境准备](./Golang/Golang基础学习/02_开发前环境准备/README.md)
+- [03_helloworld及变量](./Golang/Golang基础学习/03_helloworld及变量/README.md)
 - 
 

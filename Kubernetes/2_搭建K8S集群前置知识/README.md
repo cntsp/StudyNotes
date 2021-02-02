@@ -6,13 +6,13 @@
 
 单个master节点，然后管理多个node节点
 
-![img](../1_Kubernetes%E7%AE%80%E4%BB%8B/images/image-20200928110456495.png)
+![](images/image-20200928110456495-1612246108205.png)
 
 ### 多master集群
 
 多个master节点，管理多个node节点
 
-![img](../1_Kubernetes%E7%AE%80%E4%BB%8B/images/image-20200928110543829.png)
+![](../../../../%E7%BB%83%E4%B9%A0%E6%96%87%E4%BB%B6%E5%A4%B9/docker/images/image-20200928110543829-1612246131570.png)
 
 ## 服务器硬件配置要求
 

@@ -145,7 +145,7 @@ K8S是kubernetes的简称，K是kubernetes单词的首字母的大写，8代表 
 
 ### 3、k8s集群架构组件
 
-- 组件架构图
+- #### 组件架构图
 
 
 
@@ -157,9 +157,9 @@ K8S是kubernetes的简称，K是kubernetes单词的首字母的大写，8代表 
 
 
 
-架构分为Master节点和Work节点
+#### 架构分为Master节点和Work节点
 
-Master节点内部的组件架构：
+##### Master节点内部的组件架构：
 
 * API Server : 	集群统一入口，以RESTful方式，交给etcd存储
 * Scheduler:      节点调度，利用一系列的算法来选择Work节点部署应用
@@ -170,7 +170,7 @@ Master节点内部的组件架构：
 
 
 
-​	Work节点内部的组件架构：
+##### 	Work节点内部的组件架构：
 
 - ​	kubelet:	相当于master派到node节点的代表，管理本机容器
 - ​    kube-proxy:    提供网络代理，负载均衡等操作								
@@ -180,4 +180,117 @@ Master节点内部的组件架构：
 ​							![image-20210129150029444](images/image-20201122155629990.png)
 
 ​	
+
+k8s 集群控制节点，对集群进行调度管理，接受集群外用户去集群操作请求：
+
+- Master Node：主控节点
+  - API Server：集群统一入口，以restful风格进行操作，同时交给etcd存储
+    - 提供认证、授权、访问控制、API注册和发现等机制
+  - scheduler：节点的调度，选择node节点应用部署
+  - controller-manager：处理集群中常规后台任务，一个资源对应一个控制器
+  -  etcd：存储系统，用于保存集群中的相关数据
+- Work Node: 
+  - Kubelet：master派到Node节点的代表，管理本机容器
+    - 一个集群中每个节点上运行的代理，它保证容器都运行在Pod中
+    - 负责维护容器的生命周期，同时也负责Volume(CSI)和网络(CNI)的管理
+  - kube-proxy：提供网络代理，负载均衡等操作
+- 容器运行环境【Container Runtime】
+  - 容器运行环境是负责运行容器的软件
+  - kubernetes支持多容器
+- fluentd：是一个守护进程，它有助于提升集群层面日志
+
+
+
+### K8S核心概念
+
+#### Pod
+
+- 最小的部署单元
+- 一组容器的集合
+- 共享网络
+- 生命周期是短暂的
+
+#### controller
+
+- 确保预期的pod副本数量
+- 无状态应用部署   ---->> Deployment
+- 有状态应用部署   ---->> StatulfulSet
+- 守护式进程部署   ---->>  DaemonSet
+- 一次性应用部署   ---->>  Job
+- 定时任务部署       ---->> CrontJob
+
+#### Volume
+
+- 声明在Pod容器中可访问的文件目录
+- 可以被挂载到Pod中一个或多个容器指定路径下
+- 支持多种后端存储抽象【本地存储、分布式存储、云存储...】
+
+#### Deployment
+
+- 定义一组Pod副本数目，版本等
+- 通过控制器（controller）维持Pod在期望的数量上【自动恢复失败的Pod】
+- 通过控制器以指定的策略控制版本【滚动升级、回滚】
+
+![image-20210202115552636](images/image-20210202115552636.png)
+
+#### Service
+
+- 定义一组Pod的访问规则
+- Pod的负载均衡，提供一个或多个Pod的稳定访问地址
+- 支持多种方式【ClusterIP、NodePort、LoadBalander】
+
+![image-20210202115614154](images/image-20210202115614154.png)
+
+#### Label
+
+label：标签，用于对象资源查询、筛选
+
+![image-20210202130526038](images/image-20210202130526038.png)
+
+
+
+#### NameSpace
+
+命名空间，逻辑隔离
+
+- 一个集群内部的逻辑隔离机制【鉴权、资源】
+- 每个资源都属于一个namespace
+- 同一个namespace所有资源不能重复
+- 不同namespace可以资源名重复
+
+#### API
+
+我们通过Kubernetes的API来操作整个集群
+
+同时我们可以通过kubectl、ui、curl 最终发送http + json/yaml 方式的请求给API Server, 然后控制整个K8S集群，K8S中所有的资源对象都可以采用yaml 或 json 格式的文件定义或描述
+
+如下：使用yaml部署一个nginx的Pod
+
+![image-20210202131357220](images/image-20210202131357220.png)
+
+
+
+
+
+#### 完整流程
+
+![image-20210202131416532](images/image-20210202131416532.png)
+
+
+
+- 通过Kubectl 提交一个创建RC (Replication Controller) 的请求，该请求通过API Server 写入Etcd
+- 此时Controller Manager 通过 API Server 的监听资源变化的接口监听到此RC事件
+- 分析之后，发现当前集群中还没有它所对应的Pod实例
+- 于是根据RC里的Pod模板定义一个生成Pod对象，通过APIServer 写入etcd
+- 此事件被Scheduler 发现，它立即执行一个复杂的调度流程，为这个新的Pod选定一个落户的Node，然后通过API Server将这一结果写入etcd中
+- 目标Node上运行的Kubelet进程通过APIserver监测到这个“新生”的Pod,并按照它的定义，启动该Pod并任劳任怨地负责它的下半生，直到Pod的声明结束
+- 随后，我们通过kubectl 提交一个新的映射到该Pod的Service的创建请求
+- ControllerManager 通过Label标签查询到关联的Pod实例，然后生成Service的Endpoints信息，并通过APIServer写入到etcd中
+- 接下来，所有Node上运行的Proxy进程通过APIServer查询并监听Service对象与其对应的Endpoints信息，建立一个软件方式的负载均衡器来实现service 访问到后端Pod的流量转发功能
+
+
+
+
+
+
 

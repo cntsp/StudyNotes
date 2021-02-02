@@ -20,9 +20,9 @@
 
 >来源Bilibili 【尚硅谷教程】:  [k8s教程由浅入深-尚硅谷](https://www.bilibili.com/video/BV1GT4y1A756)
 
-- [Kubernetes简介](./Kubernetes/1_Kubernetes简介/README.md)
-- [搭建s8s集群基础准备](./Kubernetes/2_搭建K8S集群前置知识/README.md)
-- [使用Kubeadm方式搭建K8S集群](./Kubernetes/3_使用kubeadm方式搭建K8S集群/README.md)
+- [Kubernetes简介](./Kubernetes/1_Kubernetes简介/)
+- [搭建s8s集群基础准备](./Kubernetes/2_搭建K8S集群前置知识/)
+- [使用Kubeadm方式搭建K8S集群](./Kubernetes/3_使用kubeadm方式搭建K8S集群/)
 - 使用二进制方法搭建k8s
 - Kubeadm和二进制方式对比
 - Kubernetes集群管理工具Kubectl
@@ -49,8 +49,8 @@
 
 
 
-- [01_为什么要学习Go](./Golang/Golang基础学习/01_为什么要学习Go/README.md)
-- [02_开发环境准备](./Golang/Golang基础学习/02_开发前环境准备/README.md)
-- [03_helloworld及变量](./Golang/Golang基础学习/03_helloworld及变量/README.md)
+- [01_为什么要学习Go](./Golang/Golang基础学习/01_为什么要学习Go/)
+- [02_开发环境准备](./Golang/Golang基础学习/02_开发前环境准备/)
+- [03_helloworld及变量](./Golang/Golang基础学习/03_helloworld及变量/)
 - 
 

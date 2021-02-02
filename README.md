@@ -22,7 +22,7 @@
 
 - [Kubernetes简介](./Kubernetes/1_Kubernetes简介/README.md)
 - [搭建s8s集群基础准备](./Kubernetes/2_搭建K8S集群前置知识/README.md)
-- 使用Kubeadm方式搭建K8S集群
+- [使用Kubeadm方式搭建K8S集群](./Kubernetes/3_使用kubeadm方式搭建K8S集群/README.md)
 - 使用二进制方法搭建k8s
 - Kubeadm和二进制方式对比
 - Kubernetes集群管理工具Kubectl

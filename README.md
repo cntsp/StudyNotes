@@ -20,7 +20,7 @@
 
 >来源Bilibili 【尚硅谷教程】:  [k8s教程由浅入深-尚硅谷](https://www.bilibili.com/video/BV1GT4y1A756)
 
-- [Kubernetes简介](./1_Kubernetes简介/README.md)
+- [Kubernetes简介](./Kubernetes/1_Kubernetes简介/README.md)
 - 搭建s8s集群基础准备
 - 使用Kubeadm方式搭建K8S集群
 - 使用二进制方法搭建k8s

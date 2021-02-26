@@ -100,7 +100,7 @@ ntpdate time.windows.com
 首先配置Docker的国内的阿里yum源
 
 ```shell
-cat >/etc/yum.repos.d/docker.repo<<EOF
+cat >/etc/yum.repos.d/docker.repo <<EOF
 [docker-ce-edge]
 name=Docker CE Edge - \$basearch
 baseurl=https://mirrors.aliyun.com/docker-ce/linux/centos/7/\$basearch/edge
@@ -118,6 +118,7 @@ yum -y install docker-ce
 
 # 设置docker的开机自启动
 systemctl enable docker
+
 # 启动docker
 systemctl start docker
 
@@ -130,7 +131,7 @@ docker --version
 ```shell
 cat >> /etc/docker/daemon.json << EOF
 {
-  "registry-mirrors": ["https://b9pmyelo.mirror.aliyuncs.com"]
+  "registry-mirrors": ["https://95tfc660.mirror.aliyuncs.com"]
 }
 EOF
 ```
@@ -187,6 +188,7 @@ k8s.gcr.io/pause:3.2
 k8s.gcr.io/etcd:3.4.3-0
 k8s.gcr.io/coredns:1.6.7
 # 由于我们修改了拉取阿里云的镜像，所以在后台拉取的都是仓库地址是 
+# registry.aliyuncs.com/google_containers/
 # registry.aliyuncs.com/google_containers/kube-apiserver:v1.18.5
 ```
 

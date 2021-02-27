@@ -65,11 +65,11 @@ sed -i 's|Selinux=enforcing|Selinux=disabled|g'  /etc/selinux/config
 sed -ri 's/.*swap.*/#&/'  /etc/fstab  
 
 # 根据规划设置主机名 【master 节点上操作】
-hostnamectl set-hostname ubuntu01
+hostnamectl set-hostname ubuntu001
 # 根据规划设置主机名 【node1 节点操作】
-hostnamectl set-hostname ubuntu02
+hostnamectl set-hostname ubuntu002
 # 根据规划设置主机名 【node2 节点操作】
-hostnamectl set-hostname ubuntu03
+hostnamectl set-hostname ubuntu003
 
 # 在master、node01、node02 添加hosts
 cat >> /etc/hosts << EOF
@@ -360,8 +360,8 @@ scheduler: {}
 由于默认拉取镜像地址 `k8s.gcr.io`国内无法访问，这里指定阿里云镜像仓库地址，【执行上述命令需要一些时间，因为需要在后台拉取各个组件的镜像】，我们可以使用 `kubeadm config images list --kubernetes-version=1.18.5 `  命令查看需要安装哪些镜像:
 
 ```shell
-root@k8smaster:~/k8s# kubeadm config images list --kubernetes-version=1.18.5
-W1120 17:06:53.904807   14527 configset.go:202] WARNING: kubeadm cannot validate component configs for API groups [kubelet.config.k8s.io kubeproxy.config.k8s.io]
+[root@ubuntu001 ~]# kubeadm config images list --kubernetes-version=1.18.5
+W0227 13:42:49.215942   16223 configset.go:202] WARNING: kubeadm cannot validate component configs for API groups [kubelet.config.k8s.io kubeproxy.config.k8s.io]
 k8s.gcr.io/kube-apiserver:v1.18.5
 k8s.gcr.io/kube-controller-manager:v1.18.5
 k8s.gcr.io/kube-scheduler:v1.18.5
@@ -369,6 +369,7 @@ k8s.gcr.io/kube-proxy:v1.18.5
 k8s.gcr.io/pause:3.2
 k8s.gcr.io/etcd:3.4.3-0
 k8s.gcr.io/coredns:1.6.7
+
 # 由于修改了拉取阿里云的镜像，所以拉取的镜像仓库地址是registry.aliyuncs.com/google_containers/
 # 所以上面在执行kubeadm init ... 初始化之前我们可以在master节点提前下载以下镜像
 docker pull registry.aliyuncs.com/google_containers/kube-apiserver:v1.18.5
@@ -381,38 +382,12 @@ docker pull registry.aliyuncs.com/google_containers/coredns:1.6.7
 # node节点需要下载以下镜像
 docker pull registry.aliyuncs.com/google_containers/kube-proxy:v1.18.5
 docker pull registry.aliyuncs.com/google_containers/pause:3.2
-# 到这里我们就剩跨节点的扁平化的网络插件没有安装，我们采用的是flannel，由于我们直接拉取的是flannel的yaml文件里的镜像是一个国内网络不能访问的地址，所以我们需要对flannel yaml中的镜像需要提前下载好，这个网络插件需要以DaemonSet的方式部署载每一个节点上。
+# 所有的镜像都下载到对应的节点上了，我们可以开始初始化 kubeadm init ....或者通过yaml文件方式 kubeadm init --config=kubeadm-config.yaml | tee kubeadm-init.log
 ```
 
-当我们出现下面的输出时，说明kubernetes 的初始化已经完成
 
-```shell
-............
-............
-............
-[kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
-[addons] Applied essential addon: CoreDNS
-[addons] Applied essential addon: kube-proxy
 
-Your Kubernetes control-plane has initialized successfully!
-
-To start using your cluster, you need to run the following as a regular user:
-
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-Then you can join any number of worker nodes by running the following on each as root:
-
-kubeadm join 172.24.127.111:6443 --token vufzl2.j8obc9jel3prg1kf \
-    --discovery-token-ca-cert-hash sha256:401904a82f106b190b4415353ecd4e2bee54c4bba322acae00057724fb7dce1a 
-```
-
-如果你是普通用户还是root用户，都执行下面命令【master 节点操作】
+不管你是普通用户还是root用户，都执行下面命令【master 节点操作】
 
 ```shell
 [root@ubuntu001 docker]# mkdir -p $HOME/.kube
@@ -463,6 +438,7 @@ NAME        STATUS     ROLES    AGE   VERSION
 ubuntu001   NotReady   master   11m   v1.18.5
 ubuntu002   NotReady   <none>   66s   v1.18.5
 ubuntu003   NotReady   <none>   69s   v1.18.5
+# 到这里我们就剩跨节点的扁平化的网络插件没有安装，我们采用的是flannel，由于我们直接拉取的是flannel的yaml文件里的镜像是一个国内网络不能访问的地址，所以我们需要对flannel yaml中的镜像需要提前下载好，这个网络插件需要以DaemonSet的方式部署载每一个节点上。
 
 [root@ubuntu001 ~]# kubectl get cs
 NAME                 STATUS    MESSAGE             ERROR
@@ -473,7 +449,7 @@ etcd-0               Healthy   {"health":"true"}
 
 ![image-20210227131205636](../../%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/images/image-20210227131205636.png)
 
-部署CNI网络插件
+部署flannel网络插件
 
 上面的状态还是NotReady,我们来安装网络插件，来进行联网访问
 
